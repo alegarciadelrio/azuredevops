@@ -1,0 +1,150 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowDefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "triggers": {
+            "manual": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                    "method": "POST",
+                    "schema": {}
+                }
+            }
+        },
+        "actions": {
+            "Parse_JSON": {
+                "runAfter": {},
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@triggerBody()",
+                    "schema": {
+                        "properties": {
+                            "eventType": {
+                                "type": "string"
+                            },
+                            "resource": {
+                                "properties": {
+                                    "createdBy": {
+                                        "properties": {
+                                            "displayName": {
+                                                "type": "string"
+                                            },
+                                            "uniqueName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "pullRequestId": {
+                                        "type": "integer"
+                                    },
+                                    "repository": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "reviewers": {
+                                        "items": {
+                                            "properties": {
+                                                "displayName": {
+                                                    "type": "string"
+                                                },
+                                                "uniqueName": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                }
+            },
+            "For_each_reviewer": {
+                "foreach": "@body('Parse_JSON')?['resource']?['reviewers']",
+                "actions": {
+                    "Post_message_in_a_chat_or_channel": {
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['teams']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "body": {
+                                "recipient": "@items('For_each_reviewer')?['uniqueName']",
+                                "messageBody": "<p class=\"editor-paragraph\">New Pull Request Review Required</p><p class=\"editor-paragraph\"><br>Pull Request #@{body('Parse_JSON')?['resource']?['pullRequestId']}<br>Title: @{body('Parse_JSON')?['resource']?['title']}</p><p class=\"editor-paragraph\">Repository: @{body('Parse_JSON')?['resource']?['repository']?['name']}</p><p class=\"editor-paragraph\">Created by: @{body('Parse_JSON')?['resource']?['createdBy']?['displayName']}</p><p class=\"editor-paragraph\">Description: @{body('Parse_JSON')?['resource']?['description']}</p>"
+                            },
+                            "path": "/beta/teams/conversation/message/poster/Flow bot/location/@{encodeURIComponent('Chat with Flow bot')}"
+                        }
+                    },
+                    "Post_card_in_a_chat_or_channel": {
+                        "runAfter": {
+                            "Post_message_in_a_chat_or_channel": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['teams']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "body": {
+                                "recipient": "@items('For_each_reviewer')?['uniqueName']",
+                                "messageBody": "{\n    \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n    \"type\": \"AdaptiveCard\",\n    \"version\": \"1.0\",\n    \"body\": [\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"New Pull Request\",\n            \"id\": \"Title\",\n            \"spacing\": \"Medium\",\n            \"horizontalAlignment\": \"Center\",\n            \"size\": \"ExtraLarge\",\n            \"weight\": \"Bolder\",\n            \"color\": \"Accent\"\n        },\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"ID: #@{body('Parse_JSON')?['resource']?['pullRequestId']}\",\n            \"id\": \"acHeaderTagLine\",\n            \"separator\": true\n        },\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"Repository @{body('Parse_JSON')?['resource']?['repository']?['name']}\",\n            \"weight\": \"Bolder\",\n            \"size\": \"ExtraLarge\",\n            \"spacing\": \"None\",\n            \"id\": \"acHeader\"\n        },\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"@{body('Parse_JSON')?['resource']?['title']}\",\n            \"id\": \"acTitle\",\n            \"wrap\": true\n        },\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"Created by @{body('Parse_JSON')?['resource']?['createdBy']?['displayName']}\",\n            \"id\": \"acCreatedBy\",\n            \"wrap\": true\n        },\n        {\n            \"type\": \"TextBlock\",\n            \"text\": \"Requiered: @{if(items('For_each_reviewer')?['isRequired'], 'Yes', 'No')}\",\n            \"id\": \"acRequired\",\n            \"wrap\": true\n        }\n        \n    ],\n    \"actions\": [\n        {\n            \"type\": \"Action.OpenUrl\",\n            \"title\": \"Review\",\n            \"url\": \"@{body('Parse_JSON')?['resource']?['_links']?['web']?['href']}\"\n        }\n    ]\n}"
+                            },
+                            "path": "/v1.0/teams/conversation/adaptivecard/poster/Flow bot/location/@{encodeURIComponent('Chat with Flow bot')}"
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            }
+        },
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "type": "Object",
+                "defaultValue": {}
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "type": "Object",
+            "value": {
+                "teams": {
+                    "id": "/subscriptions/3c5415fb-7cb0-47a1-a002-abab5830cdde/providers/Microsoft.Web/locations/northcentralus/managedApis/teams",
+                    "connectionId": "/subscriptions/3c5415fb-7cb0-47a1-a002-abab5830cdde/resourceGroups/ContainersDev/providers/Microsoft.Web/connections/teams",
+                    "connectionName": "teams"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,57 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "New Pull Request",
+            "id": "Title",
+            "spacing": "Medium",
+            "horizontalAlignment": "Center",
+            "size": "ExtraLarge",
+            "weight": "Bolder",
+            "color": "Accent"
+        },
+        {
+            "type": "TextBlock",
+            "text": "ID: #@{body('Parse_JSON')?['resource']?['pullRequestId']}",
+            "id": "acHeaderTagLine",
+            "separator": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "Repository @{body('Parse_JSON')?['resource']?['repository']?['name']}",
+            "weight": "Bolder",
+            "size": "ExtraLarge",
+            "spacing": "None",
+            "id": "acHeader"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{body('Parse_JSON')?['resource']?['title']}",
+            "id": "acTitle",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "Created by @{body('Parse_JSON')?['resource']?['createdBy']?['displayName']}",
+            "id": "acCreatedBy",
+            "wrap": true
+        },
+        {
+            "type": "TextBlock",
+            "text": "Requiered: @{if(items('For_each_reviewer')?['isRequired'], 'Yes', 'No')}",
+            "id": "acRequired",
+            "wrap": true
+        }
+        
+    ],
+    "actions": [
+        {
+            "type": "Action.OpenUrl",
+            "title": "Review",
+            "url": "@{body('Parse_JSON')?['resource']?['_links']?['web']?['href']}"
+        }
+    ]
+}

@@ -1,0 +1,98 @@
+parameters:
+  containerName: ''
+  containerRegistry: ''
+  containerTag: ''
+  containerPort: ''
+  containerHostPort: ''
+  registryServiceConnection: ''
+  environment: ''
+  environmentVM: ''
+
+jobs:
+- deployment:
+  displayName: 'Job'
+  environment:
+    name: ${{ parameters.environment }}
+    resourceName: ${{ parameters.environmentVM }}
+    resourceType: virtualMachine
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: Docker@2
+          displayName: Login to ACR
+          inputs:
+            command: 'login'
+            containerRegistry: ${{ parameters.registryServiceConnection }}
+        - task: Bash@3
+          displayName: 'Deploy the container'
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Stop and remove existing container if running
+              if [ "$(docker ps -q -f name=${{ parameters.containerName }})" ]; then
+                  echo "Stopping existing container..."
+                  docker stop ${{ parameters.containerName }}
+                  docker rm ${{ parameters.containerName }}
+              fi
+              
+              # Clean up old images
+              echo "Cleaning up old images..."
+              docker image prune -f
+              
+              # Pull latest image
+              echo "Pulling latest image..."
+              docker pull ${{ parameters.containerRegistry }}/${{ parameters.containerName }}:${{ parameters.containerTag }}
+              
+              # Run new container
+              echo "Starting new container..."
+              docker run -d \
+                --name ${{ parameters.containerName }} \
+                --restart always \
+                -p ${{ parameters.containerHostPort }}:${{ parameters.containerPort }} \
+                ${{ parameters.containerRegistry }}/${{ parameters.containerName }}:${{ parameters.containerTag }}
+              
+              # Verify container is running
+              if [ ! "$(docker ps -q -f name=${{ parameters.containerName }})" ]; then
+                  echo "Container failed to start"
+                  exit 1
+              fi
+              
+              echo "Deployment completed successfully"
+        - task: Bash@3
+          displayName: 'Perform health check'
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Wait for container to initialize
+              echo "Waiting for application to initialize..."
+              sleep 15
+              
+              # Health check configuration
+              MAX_RETRIES=5
+              RETRY_COUNT=0
+              HEALTH_CHECK_URL="http://localhost:${{ parameters.containerPort }}/"  # Adjust this to your health endpoint
+              
+              while [ $RETRY_COUNT -lt $MAX_RETRIES ]
+              do
+                  HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_CHECK_URL)
+                  
+                  if [ $HTTP_STATUS -eq 200 ]; then
+                      echo "Health check passed! Application is responding with HTTP 200"
+                      exit 0
+                  else
+                      echo "Attempt $(($RETRY_COUNT + 1))/$MAX_RETRIES: Health check failed with status $HTTP_STATUS"
+                      RETRY_COUNT=$(($RETRY_COUNT + 1))
+                      
+                      if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                          echo "Waiting 10 seconds before next attempt..."
+                          sleep 10
+                      fi
+                  fi
+              done
+              
+              echo "Health check failed after $MAX_RETRIES attempts"
+              echo "Stopping and removing unhealthy container..."
+              docker stop ${{ parameters.containerName }}-dev
+              docker rm ${{ parameters.containerName }}-dev
+              exit 1

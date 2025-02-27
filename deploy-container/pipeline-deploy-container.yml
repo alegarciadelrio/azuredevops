@@ -1,0 +1,82 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  branches:
+    include:
+      - develop
+  paths:
+    include:
+      - 'containerFolder/**'
+
+resources:
+- repo: self
+
+variables:
+  containerName: 'containerName'
+  containerRegistry: 'example.azurecr.io'
+  containerTag: '$(Build.BuildId)'
+  containerPort: '8000'
+  containerHostPort: '8000'
+  registryServiceConnection: '************************ID************'
+  devEnvironment: 'development'
+  devEnvironmentVM: 'server-dev'
+  prodEnvironment: 'production'
+  prodEnvironmentVM: 'server-prod'
+  dockerfilePath: '$(Build.SourcesDirectory)/containerFolder/Dockerfile'
+  dockerRegistryServiceConnection: '************************ID************'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(containerName)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(registryServiceConnection)
+        tags: |
+          $(containerTag)
+
+- stage: DeployToDev
+  displayName: 'Deploy to development'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - template: './deploy-container-job.yml'
+    parameters:
+      containerName: $(containerName)
+      containerRegistry: $(containerRegistry)
+      containerTag: $(containerTag)
+      containerPort: $(containerPort)
+      containerHostPort: $(containerHostPort)
+      registryServiceConnection: $(registryServiceConnection)
+      environment: $(devEnvironment)
+      environmentVM: ${{variables['devEnvironmentVM']}}
+
+- stage: DeployToProd
+  displayName: 'Deploy to production'
+  dependsOn: DeployToDev
+  condition: succeeded()
+  jobs:
+  - template: './deploy-container-job.yml'
+    parameters:
+      containerName: $(containerName)
+      containerRegistry: $(containerRegistry)
+      containerTag: $(containerTag)
+      containerPort: $(containerPort)
+      containerHostPort: $(containerHostPort)
+      registryServiceConnection: $(registryServiceConnection)
+      environment: $(prodEnvironment)
+      environmentVM: ${{variables['prodEnvironmentVM']}}

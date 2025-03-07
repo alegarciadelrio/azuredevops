@@ -1,7 +1,7 @@
-# Kubernetes Toolbox
+# Azure DevOps Toolbox
 
 ## Documentation
-🔭 Learn how to get started with Kubernetes Toolbox and then dive deeper into other advanced topics.
+🔭 Learn how to get started with Azure DevOps Toolbox and then dive deeper into other advanced topics.
 <p>
   <img alt="bash" src="https://img.shields.io/badge/-Bash-grey?style=flat-square&logo=gnubash&logoColor=white" />
   <img alt="Kubernetes" src="https://img.shields.io/badge/Kubernetes-%23326CE5?style=flat-square&logo=kubernetes&logoColor=white" />

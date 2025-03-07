@@ -3,8 +3,8 @@
 ## Documentation
 🔭 Learn how to get started with Azure DevOps Toolbox and then dive deeper into other advanced topics.
 <p>
-  <img alt="AzureDevOps" src="https://img.shields.io/badge/-Bash-grey?style=flat-square&logo=gnubash&logoColor=white" />
-  <img alt="Bash" src="https://img.shields.io/badge/Azure%20DevOps-blue?style=flat-square" />
+  <img alt="AzureDevOps" src="https://img.shields.io/badge/Azure%20DevOps-blue?style=flat-square" />
+  <img alt="Bash" src="https://img.shields.io/badge/-Bash-grey?style=flat-square&logo=gnubash&logoColor=white" />
   <img alt="Docker" src="https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white" />
   <img alt="Kubernetes" src="https://img.shields.io/badge/Kubernetes-%23326CE5?style=flat-square&logo=kubernetes&logoColor=white" />
   <img alt="Amazon EKS" src="https://img.shields.io/badge/Amazon%20EKS-%23FF9900?style=flat-square&logo=amazoneks&logoColor=white" />

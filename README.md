@@ -1,12 +1,7 @@
 # Azure DevOps Toolbox
 
-<<<<<<< HEAD
-## Documentation
-🔭 Learn how to get started with Azure DevOps Toolbox and then dive deeper into other advanced topics.
-=======
 A collection of Azure DevOps pipeline examples and tools for common DevOps scenarios. 🔭 Learn how to get started with Azure DevOps Toolbox and then dive deeper into other advanced topics.
 
->>>>>>> 11dc99f (fix: Update the main readme file.)
 <p>
   <img alt="AzureDevOps" src="https://img.shields.io/badge/Azure%20DevOps-blue?style=flat-square" />
   <img alt="Bash" src="https://img.shields.io/badge/-Bash-grey?style=flat-square&logo=gnubash&logoColor=white" />
@@ -15,16 +10,6 @@ A collection of Azure DevOps pipeline examples and tools for common DevOps scena
   <img alt="Amazon EKS" src="https://img.shields.io/badge/Amazon%20EKS-%23FF9900?style=flat-square&logo=amazoneks&logoColor=white" />
 </p>
 
-<<<<<<< HEAD
-## deploy-contianer
-Azure pipeline to deploy a container on a server.
-
-## deploy-eks
-Azure pipeline to deploy on Amazon EKS.
-
-## notify-pull-request-reviewers
-Logic App to send a notification card on teams when there is a pull request on Azure DevOps.
-=======
 ## Table of Contents
 
 - [Overview](#overview)
@@ -135,4 +120,3 @@ Contributions to the Azure DevOps Toolbox are welcome! To contribute:
 5. Open a Pull Request
 
 Please ensure your contributions include appropriate documentation and follow the existing patterns in the repository.
->>>>>>> 11dc99f (fix: Update the main readme file.)

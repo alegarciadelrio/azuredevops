@@ -1,10 +1,10 @@
-# Kubernetes Deployment Pipeline
+# ☸️ Kubernetes Deployment Pipeline
 
 This folder contains Azure DevOps pipeline configurations for deploying applications to Kubernetes clusters, specifically Amazon EKS (Elastic Kubernetes Service).
 
-## Files
+## 📄 Files
 
-### pipeline-deploy-kubernetes.yml
+### 🔄 pipeline-deploy-kubernetes.yml
 
 A pipeline definition for deploying applications to Kubernetes clusters. This pipeline:
 
@@ -12,25 +12,25 @@ A pipeline definition for deploying applications to Kubernetes clusters. This pi
 2. Verifies the existence of Kubernetes manifest files
 3. Applies the Kubernetes manifests to deploy the application and its service
 
-#### Pipeline Configuration
+#### ⚙️ Pipeline Configuration
 
-- **Trigger**: Automatically runs on changes to the `main` branch
-- **Agent**: Uses the `ubuntu-latest` virtual machine image
-- **Environment**: Deploys to the `development` environment and the `default` namespace
-- **Steps**:
-  - Checkout the repository
-  - Verify manifest files exist
-  - Apply the application deployment manifest
-  - Apply the service manifest
+- **🔄 Trigger**: Automatically runs on changes to the `main` branch
+- **🖥️ Agent**: Uses the `ubuntu-latest` virtual machine image
+- **🌐 Environment**: Deploys to the `development` environment and the `default` namespace
+- **📋 Steps**:
+  - 📥 Checkout the repository
+  - ✅ Verify manifest files exist
+  - 🚀 Apply the application deployment manifest
+  - 🔌 Apply the service manifest
 
-## Required Manifest Files
+## 📑 Required Manifest Files
 
 The pipeline expects the following Kubernetes manifest files to exist in your repository:
 
 - `$(Build.SourcesDirectory)/manifests/webapp-hello-v1.yml`: Deployment manifest for the application
 - `$(Build.SourcesDirectory)/manifests/webapp-hello-service-v1.yml`: Service manifest for the application
 
-## Usage
+## 📝 Usage
 
 1. Copy this file to your Azure DevOps repository
 2. Create the necessary Kubernetes manifest files in a `manifests` directory
@@ -38,7 +38,7 @@ The pipeline expects the following Kubernetes manifest files to exist in your re
 4. Configure the Kubernetes service connection
 5. Reference this pipeline in your Azure DevOps project
 
-## Diagram
+## 📊 Diagram
 
 ```mermaid
 graph TD
@@ -49,7 +49,7 @@ graph TD
     E --> F[Deployment Complete]
 ```
 
-## Notes
+## 📌 Notes
 
 - This pipeline assumes you have already set up the necessary Azure DevOps environments and Kubernetes service connections
 - The pipeline is configured to deploy to the `default` namespace in the Kubernetes cluster

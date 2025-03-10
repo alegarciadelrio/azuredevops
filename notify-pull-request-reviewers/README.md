@@ -1,10 +1,10 @@
-# Pull Request Notification System
+# 📢 Pull Request Notification System
 
 This folder contains configuration files for automating pull request notifications to reviewers via Microsoft Teams using Azure Logic Apps.
 
-## Files
+## 📄 Files
 
-### adaptive-card-teams.json
+### 🃏 adaptive-card-teams.json
 
 An Adaptive Card template for Microsoft Teams notifications. This template creates a rich, interactive card that displays:
 
@@ -17,7 +17,7 @@ An Adaptive Card template for Microsoft Teams notifications. This template creat
 
 The Adaptive Card provides a visually appealing and informative notification that allows reviewers to quickly understand the pull request details and take action.
 
-### azure-devops-pull-request-notification.json
+### ⚡ azure-devops-pull-request-notification.json
 
 An Azure Logic App workflow definition for processing pull request events from Azure DevOps and sending notifications to reviewers. This workflow:
 
@@ -27,32 +27,32 @@ An Azure Logic App workflow definition for processing pull request events from A
 4. Sends a message to each reviewer in Microsoft Teams
 5. Posts an Adaptive Card to each reviewer in Microsoft Teams
 
-## Setup Instructions
+## 🔧 Setup Instructions
 
-### Prerequisites
+### 📋 Prerequisites
 
 - An Azure subscription
 - Access to Azure Logic Apps
 - Microsoft Teams
 - Azure DevOps project with pull request workflows
 
-### Implementation Steps
+### 📝 Implementation Steps
 
-1. **Create an Azure Logic App**:
+1. **⚡ Create an Azure Logic App**:
    - Create a new Logic App in the Azure Portal
    - Import the `azure-devops-pull-request-notification.json` definition
 
-2. **Configure Teams Connection**:
+2. **👥 Configure Teams Connection**:
    - Set up a Teams connection in the Logic App
    - Update the connection ID in the workflow definition
 
-3. **Set up Azure DevOps Webhook**:
+3. **🔗 Set up Azure DevOps Webhook**:
    - Go to your Azure DevOps project settings
    - Navigate to Service Hooks
    - Create a new webhook that triggers on pull request created events
    - Point the webhook URL to your Logic App's HTTP trigger endpoint
 
-## Diagram
+## 📊 Diagram
 
 ```mermaid
 sequenceDiagram
@@ -71,7 +71,7 @@ sequenceDiagram
     end
 ```
 
-## Customization
+## 🎨 Customization
 
 You can customize the notification content and appearance by modifying:
 
@@ -79,7 +79,7 @@ You can customize the notification content and appearance by modifying:
 - The message text in the Logic App workflow
 - The workflow logic to add additional conditions or actions
 
-## Notes
+## 📌 Notes
 
 - The Logic App uses the Teams connection to send messages and cards to reviewers
 - Reviewers are identified by their unique names in Azure DevOps

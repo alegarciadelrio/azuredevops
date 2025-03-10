@@ -1,10 +1,10 @@
-# Container Deployment Pipeline
+# 🐳 Container Deployment Pipeline
 
 This folder contains Azure DevOps pipeline templates and configurations for deploying containerized applications to virtual machines.
 
-## Files
+## 📄 Files
 
-### deploy-container-job.yml
+### 📋 deploy-container-job.yml
 
 A reusable job template for deploying Docker containers to virtual machines. This template handles:
 
@@ -15,7 +15,7 @@ A reusable job template for deploying Docker containers to virtual machines. Thi
 - Running the new container
 - Performing health checks to ensure the application is running correctly
 
-#### Parameters
+#### ⚙️ Parameters
 
 | Parameter | Description |
 |-----------|-------------|
@@ -28,7 +28,7 @@ A reusable job template for deploying Docker containers to virtual machines. Thi
 | environment | Name of the deployment environment |
 | environmentVM | Name of the virtual machine resource |
 
-### pipeline-deploy-container.yml
+### 🔄 pipeline-deploy-container.yml
 
 A complete pipeline definition for building and deploying containerized applications. This pipeline:
 
@@ -36,16 +36,16 @@ A complete pipeline definition for building and deploying containerized applicat
 2. Deploys the container to a development environment
 3. Deploys the container to a production environment (after successful deployment to development)
 
-#### Pipeline Configuration
+#### ⚙️ Pipeline Configuration
 
-- **Trigger**: Automatically runs on changes to the `develop` branch and files in the `containerFolder` directory
-- **Variables**: Configurable settings for container name, registry, ports, and environment details
-- **Stages**:
-  - **Build**: Builds and pushes the Docker image
-  - **DeployToDev**: Deploys to the development environment
-  - **DeployToProd**: Deploys to the production environment
+- **🔄 Trigger**: Automatically runs on changes to the `develop` branch and files in the `containerFolder` directory
+- **🔧 Variables**: Configurable settings for container name, registry, ports, and environment details
+- **📦 Stages**:
+  - **🏗️ Build**: Builds and pushes the Docker image
+  - **🚀 DeployToDev**: Deploys to the development environment
+  - **🌐 DeployToProd**: Deploys to the production environment
 
-## Usage
+## 📝 Usage
 
 1. Copy these files to your Azure DevOps repository
 2. Customize the variables in `pipeline-deploy-container.yml` to match your project requirements
@@ -53,7 +53,7 @@ A complete pipeline definition for building and deploying containerized applicat
 4. Configure your deployment environments and virtual machines
 5. Reference this pipeline in your Azure DevOps project
 
-## Diagram
+## 📊 Diagram
 
 ```mermaid
 graph TD
@@ -64,7 +64,7 @@ graph TD
     D -->|No| F[Pipeline Fails]
 ```
 
-## Notes
+## 📌 Notes
 
 - The health check in `deploy-container-job.yml` can be customized to match your application's health endpoint
 - The pipeline assumes you have already set up the necessary Azure DevOps environments and resources

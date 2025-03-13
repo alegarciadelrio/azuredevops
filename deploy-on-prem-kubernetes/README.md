@@ -80,6 +80,7 @@ spec:
     - name: secret-name-of-kubernetes
 ```
 4. Set up the necessary service connections in your Azure DevOps project
+
 More details on:
 https://learn.microsoft.com/en-us/azure/aks/aksarc/deploy-azure-container-registry
 

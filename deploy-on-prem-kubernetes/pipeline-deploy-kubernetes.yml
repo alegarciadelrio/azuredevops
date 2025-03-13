@@ -1,0 +1,113 @@
+# Please read the README file before you use this pipeline, this requires create a sectet on kubernetes to connect to the ACR.
+# Build and push a docker image to Azure Container Registry, then deploy on a on-prem kubernetes.
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  branches:
+    include:
+      - develop
+  paths:
+    include:
+      - 'frontend/**'
+
+resources:
+- repo: self
+
+variables:
+  containerName: 'containerName'
+  containerRegistry: 'example.azurecr.io'
+  containerTag: '$(Build.BuildId)'
+  containerPort: '8000'
+  containerHostPort: '8000'
+  registryServiceConnection: '************************ID************'
+  devEnvironment: 'development'
+  devEnvironmentVM: 'server-dev'
+  prodEnvironment: 'production'
+  prodEnvironmentVM: 'server-prod'
+  dockerfilePath: '$(Build.SourcesDirectory)/containerFolder/Dockerfile'
+  dockerRegistryServiceConnection: '************************ID************'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(containerName)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(containerTag)
+- stage: DeployToDev
+  displayName: 'Deploy to development'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment:
+    displayName: 'Job'
+    environment:
+      name: $(devEnvironment)
+      resourceName: $(devEnvironmentVM)
+      resourceType: virtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            displayName: 'Deploy on Kubernetes'
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "Creating file deployment.yaml"
+                # Create deployment YAML that mounts the ConfigMap
+                cat > $(Build.ArtifactStagingDirectory)/deployment.yaml << EOF
+                apiVersion: apps/v1
+                kind: Deployment
+                metadata:
+                  name: webapp-hello-v1
+                spec:
+                  replicas: 5
+                  selector:
+                    matchLabels:
+                      app: webapp-hello-v1
+                  template:
+                    metadata:
+                      labels:
+                        app: webapp-hello-v1
+                    spec:
+                      containers:
+                      - name: webapp-hello
+                        image: $(containerRegistry)/$(containerName):$(containerTag) 
+                        imagePullPolicy: IfNotPresent        
+                        ports:
+                        - containerPort: 8080
+                        resources:
+                          requests:
+                            memory: "64Mi"
+                            cpu: "200m"
+                          limits:
+                            memory: "128Mi"
+                            cpu: "500m"
+                      imagePullSecrets:
+                      - name: secret-name-of-kubernetes
+                EOF
+                cat $(Build.ArtifactStagingDirectory)/deployment.yaml   
+          - task: Bash@3
+            displayName: 'Apply Deployment'
+            inputs:
+              targetType: 'inline'
+              script: |
+                kubectl get all
+                kubectl apply -f $(Build.ArtifactStagingDirectory)/deployment.yaml
+
+          

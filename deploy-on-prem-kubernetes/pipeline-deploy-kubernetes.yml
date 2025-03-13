@@ -64,33 +64,34 @@ stages:
         deploy:
           steps:
           - task: Bash@3
-            displayName: 'Deploy on Kubernetes'
+            displayName: 'Deploy YAML file'
             inputs:
               targetType: 'inline'
               script: |
-                echo "Creating file deployment.yaml"
+                echo "Creating file manifests.yaml"
                 # Create deployment YAML that mounts the ConfigMap
-                cat > $(Build.ArtifactStagingDirectory)/deployment.yaml << EOF
+                cat > $(Build.ArtifactStagingDirectory)/manifests.yaml << EOF
+                # Deployment
                 apiVersion: apps/v1
                 kind: Deployment
                 metadata:
-                  name: webapp-hello-v1
+                  name: $(containerName)
                 spec:
-                  replicas: 5
+                  replicas: 10
                   selector:
                     matchLabels:
-                      app: webapp-hello-v1
+                      app: $(containerName)
                   template:
                     metadata:
                       labels:
-                        app: webapp-hello-v1
+                        app: $(containerName)
                     spec:
                       containers:
-                      - name: webapp-hello
+                      - name: $(containerName)
                         image: $(containerRegistry)/$(containerName):$(containerTag) 
                         imagePullPolicy: IfNotPresent        
                         ports:
-                        - containerPort: 8080
+                        - containerPort: $(containerPort)
                         resources:
                           requests:
                             memory: "64Mi"
@@ -100,14 +101,29 @@ stages:
                             cpu: "500m"
                       imagePullSecrets:
                       - name: secret-name-of-kubernetes
+                ---
+                # Service 
+                kind: Service
+                apiVersion: v1
+                metadata:
+                  name: $(containerName)-service
+                spec:
+                  type: NodePort
+                  selector:
+                    app: $(containerName)
+                  ports:
+                  - protocol: TCP
+                    port: 80
+                    targetPort: $(containerPort)
+                    nodePort: $(containerHostPort)
                 EOF
-                cat $(Build.ArtifactStagingDirectory)/deployment.yaml   
+                cat $(Build.ArtifactStagingDirectory)/manifests.yaml
           - task: Bash@3
-            displayName: 'Apply Deployment'
+            displayName: 'Apply deployment'
             inputs:
               targetType: 'inline'
               script: |
                 kubectl get all
-                kubectl apply -f $(Build.ArtifactStagingDirectory)/deployment.yaml
+                kubectl apply -f $(Build.ArtifactStagingDirectory)/manifests.yaml
 
           

@@ -16,6 +16,7 @@ A collection of Azure DevOps pipeline examples and tools for common DevOps scena
 - [Repository Structure](#repository-structure)
   - [deploy-container](#deploy-container)
   - [deploy-eks](#deploy-eks)
+  - [deploy-on-prem-kubernetes](#deploy-on-prem-kubernetes)
   - [notify-pull-request-reviewers](#notify-pull-request-reviewers)
 - [Key Concepts](#key-concepts)
 - [Usage](#usage)
@@ -28,6 +29,7 @@ The Azure DevOps Toolbox is a comprehensive collection of reusable pipeline temp
 The toolbox includes solutions for:
 - Container deployment to virtual machines
 - Kubernetes deployment to Amazon EKS
+- Kubernetes deployment to on-premises clusters
 - Pull request notification automation via Microsoft Teams
 
 Each solution is documented with detailed explanations, usage instructions, and diagrams to facilitate implementation.
@@ -48,6 +50,12 @@ Tools and pipelines for deploying containerized applications to virtual machines
 Tools and pipelines for deploying applications to Amazon EKS (Elastic Kubernetes Service).
 
 - **pipeline-deploy-kubernetes.yml**: Pipeline for deploying applications to Kubernetes clusters
+
+### ☸️ [deploy-on-prem-kubernetes](./deploy-on-prem-kubernetes)
+
+Tools and pipelines for deploying containerized applications to on-premises Kubernetes clusters.
+
+- **pipeline-deploy-kubernetes.yml**: Pipeline for building Docker images and deploying them to on-premises Kubernetes clusters with dynamic manifest generation
 
 ### 📢 [notify-pull-request-reviewers](./notify-pull-request-reviewers)
 
@@ -89,7 +97,8 @@ To use the examples in this repository:
 
 2. **Select the Appropriate Example**:
    - For container deployments: Use the files in the `deploy-container` folder
-   - For Kubernetes deployments: Use the files in the `deploy-eks` folder
+   - For Kubernetes deployments on Amazon EKS: Use the files in the `deploy-eks` folder
+   - For Kubernetes deployments on on-premises clusters: Use the files in the `deploy-on-prem-kubernetes` folder
    - For pull request notifications: Use the files in the `notify-pull-request-reviewers` folder
 
 3. **Customize the Configuration**:

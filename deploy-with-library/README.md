@@ -95,3 +95,7 @@ graph TD
 - The pipeline dynamically generates the Kubernetes deployment manifest during runtime
 - The pipeline uses image pull secrets to authenticate with Azure Container Registry
 - For production deployments, consider adding additional stages and approval gates
+
+## 📚 References
+
+- [Kubernetes equivalent of env file in Docker](https://stackoverflow.com/questions/33478555/kubernetes-equivalent-of-env-file-in-docker)

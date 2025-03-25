@@ -77,7 +77,7 @@ stages:
                 cat $(BackendEnv.secureFilePath)
                 # Create a Kubernetes secret from the env
                 kubectl create secret generic $(containerName)-secret \
-                  --from-file=$(BackendEnv.secureFilePath) \
+                  --from-env-file=$(BackendEnv.secureFilePath) \
                   --namespace=default \
                   --dry-run=client -o yaml | kubectl apply -f -
           - task: Bash@3

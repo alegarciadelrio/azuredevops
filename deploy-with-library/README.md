@@ -99,3 +99,6 @@ graph TD
 ## 📚 References
 
 - [Kubernetes equivalent of env file in Docker](https://stackoverflow.com/questions/33478555/kubernetes-equivalent-of-env-file-in-docker)
+- [Distribute Credentials Securely Using Secrets](https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/)
+- [Using Secrets as Files from a Pod](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
+- [Kubernetes Environment Variables: The Ultimate Guide](https://spacelift.io/blog/kubernetes-environment-variables)

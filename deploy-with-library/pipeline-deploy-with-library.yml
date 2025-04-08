@@ -14,21 +14,7 @@ resources:
 - repo: self
 
 variables:
-  containerName: 'containerName'
-  containerRegistry: 'example.azurecr.io'
-  containerTag: '$(Build.BuildId)'
-  containerPort: '8000'
-  containerHostPort: '8000'
-  registryServiceConnection: '************************ID************'
-  devEnvironment: 'development'
-  devEnvironmentVM: 'server-dev'
-  prodEnvironment: 'production'
-  prodEnvironmentVM: 'server-prod'
-  dockerfilePath: '$(Build.SourcesDirectory)/containerFolder/Dockerfile'
-  dockerRegistryServiceConnection: '************************ID************'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+- group: VariableGroupName
 
 stages:
 - stage: Build

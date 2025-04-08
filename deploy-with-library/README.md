@@ -51,6 +51,23 @@ Before using this pipeline, you must:
 
 5. Set up the necessary service connections in your Azure DevOps project
 
+6. Create a variable group with the following variables:
+   | Variable | Example Value |
+   |----------|---------------|
+   | containerName | 'containerName' |
+   | containerRegistry | 'example.azurecr.io' |
+   | containerTag | '$(Build.BuildId)' |
+   | containerPort | '8000' |
+   | containerHostPort | '8000' |
+   | registryServiceConnection | '************************ID************' |
+   | devEnvironment | 'development' |
+   | devEnvironmentVM | 'server-dev' |
+   | prodEnvironment | 'production' |
+   | prodEnvironmentVM | 'server-prod' |
+   | dockerfilePath | '$(Build.SourcesDirectory)/containerFolder/Dockerfile' |
+   | dockerRegistryServiceConnection | '************************ID************' |
+   | vmImageName | 'ubuntu-latest' |
+
 ## 🔒 Azure DevOps Library Integration
 
 This pipeline showcases the integration with Azure DevOps Library, which provides several benefits:

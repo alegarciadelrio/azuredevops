@@ -17,6 +17,7 @@ A collection of Azure DevOps pipeline examples and tools for common DevOps scena
   - [deploy-container](#deploy-container)
   - [deploy-eks](#deploy-eks)
   - [deploy-on-prem-kubernetes](#deploy-on-prem-kubernetes)
+  - [deploy-with-library](#deploy-with-library)
   - [notify-pull-request-reviewers](#notify-pull-request-reviewers)
 - [Key Concepts](#key-concepts)
 - [Usage](#usage)
@@ -30,6 +31,7 @@ The toolbox includes solutions for:
 - Container deployment to virtual machines
 - Kubernetes deployment to Amazon EKS
 - Kubernetes deployment to on-premises clusters
+- Kubernetes deployment with Azure DevOps Library for secure environment variables
 - Pull request notification automation via Microsoft Teams
 
 Each solution is documented with detailed explanations, usage instructions, and diagrams to facilitate implementation.
@@ -56,6 +58,12 @@ Tools and pipelines for deploying applications to Amazon EKS (Elastic Kubernetes
 Tools and pipelines for deploying containerized applications to on-premises Kubernetes clusters.
 
 - **pipeline-deploy-kubernetes.yml**: Pipeline for building Docker images and deploying them to on-premises Kubernetes clusters with dynamic manifest generation
+
+### 📚 [deploy-with-library](./deploy-with-library)
+
+Tools and pipelines for deploying containerized applications to Kubernetes clusters using the Azure DevOps Library for secure management of environment variables.
+
+- **pipeline-deploy-with-library.yml**: Pipeline for building Docker images and deploying them to Kubernetes clusters with environment variables from secure files
 
 ### 📢 [notify-pull-request-reviewers](./notify-pull-request-reviewers)
 
@@ -99,6 +107,7 @@ To use the examples in this repository:
    - For container deployments: Use the files in the `deploy-container` folder
    - For Kubernetes deployments on Amazon EKS: Use the files in the `deploy-eks` folder
    - For Kubernetes deployments on on-premises clusters: Use the files in the `deploy-on-prem-kubernetes` folder
+   - For Kubernetes deployments with secure environment variables: Use the files in the `deploy-with-library` folder
    - For pull request notifications: Use the files in the `notify-pull-request-reviewers` folder
 
 3. **Customize the Configuration**:

@@ -8,7 +8,7 @@ trigger:
       - develop
   paths:
     include:
-      - 'frontend/**'
+      - 'backend/**'
 
 resources:
 - repo: self
@@ -41,46 +41,69 @@ stages:
   jobs:
   - deployment:
     displayName: 'Job'
-    environment:
-      name: $(devEnvironment)
-      resourceName: $(devEnvironmentVM)
-      resourceType: virtualMachine
+    environment: $(devEnvironment)
     strategy:
       runOnce:
         deploy:
           steps:
+          - task: Bash@3
+            displayName: 'Deploy namespace file'
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "Creating file namespace.yaml"
+                cat > $(Build.ArtifactStagingDirectory)/namespace.yaml << EOF
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: $(namespace)
+                EOF
+                kubectl apply -f $(Build.ArtifactStagingDirectory)/namespace.yaml
+          - task: Docker@2
+            displayName: 'Login to ACR'
+            inputs:
+              containerRegistry: $(dockerRegistryServiceConnection)
+              command: 'login'
+          - task: Bash@3
+            displayName: 'Deploy ACR credential'
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "Deploy ACR credential"
+                kubectl create secret docker-registry $(containerRegistry) \
+                  --namespace $(namespace) \
+                  --from-file=$HOME/.docker/config.json \
+                  --dry-run=client -o yaml | kubectl apply -f -
           - task: DownloadSecureFile@1
-            name: BackendEnv
+            name: SecureFileBackendEnv
             displayName: 'Download env file'
             inputs:
-              secureFile: 'BackendEnv'
+              secureFile: 'SecureFileBackendEnv'
           - task: Bash@3
-            displayName: 'Deploy env file'
+            displayName: 'Deploy backend env file'
             inputs:
               targetType: 'inline'
               script: |
-                echo "ENV file"
-                cat $(BackendEnv.secureFilePath)
-                # Create a Kubernetes secret from the env
-                kubectl create secret generic $(containerName)-secret \
-                  --from-env-file=$(BackendEnv.secureFilePath) \
-                  --namespace=default \
+                echo "Deploy backend env file"
+                kubectl create secret generic $(containerEnv) \
+                  --from-env-file=$(SecureFileBackendEnv.secureFilePath) \
+                  --namespace=$(namespace) \
                   --dry-run=client -o yaml | kubectl apply -f -
           - task: Bash@3
-            displayName: 'Deploy yaml file'
+            displayName: 'Deploy manifests file'
             inputs:
               targetType: 'inline'
               script: |
-                echo "Creating file manifests.yaml"
-                # Create deployment YAML that mounts the ConfigMap
+                echo "Deploy manifests file"
                 cat > $(Build.ArtifactStagingDirectory)/manifests.yaml << EOF
                 # Deployment
                 apiVersion: apps/v1
                 kind: Deployment
                 metadata:
                   name: $(containerName)
+                  namespace: $(namespace)
                 spec:
-                  replicas: 4
+                  replicas: 2
                   selector:
                     matchLabels:
                       app: $(containerName)
@@ -97,15 +120,18 @@ stages:
                         - containerPort: $(containerPort)
                         envFrom:
                         - secretRef:
-                            name: $(containerName)-secret
+                            name: $(containerEnv)
                       imagePullSecrets:
-                      - name: secret-name-of-kubernetes
+                      - name: $(containerRegistry)
                 ---
                 # Service 
                 kind: Service
                 apiVersion: v1
                 metadata:
-                  name: $(containerName)-service
+                  name: $(serviceName)
+                  namespace: $(namespace)
+                  annotations:
+                    tailscale.com/expose: "true"
                 spec:
                   selector:
                     app: $(containerName)
@@ -115,10 +141,7 @@ stages:
                     targetPort: $(containerPort)
                 EOF
                 cat $(Build.ArtifactStagingDirectory)/manifests.yaml
-          - task: Bash@3
-            displayName: 'Apply deployment'
-            inputs:
-              targetType: 'inline'
-              script: |
+                echo "=============================================================================="
                 kubectl apply -f $(Build.ArtifactStagingDirectory)/manifests.yaml
-                kubectl get all
+                echo "=============================================================================="
+                kubectl get all -n $(namespace)

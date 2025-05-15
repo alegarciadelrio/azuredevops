@@ -59,6 +59,12 @@ Tools and pipelines for deploying containerized applications to on-premises Kube
 
 - **pipeline-deploy-kubernetes.yml**: Pipeline for building Docker images and deploying them to on-premises Kubernetes clusters with dynamic manifest generation
 
+### 📚 [deploy-container-with-library](./deploy-container-with-library)
+
+Tools and pipelines for deploying containerized applications with a library to virtual machines.
+
+- **pipeline-deploy-container-with-library.yml**: Complete pipeline for building and deploying containers with a library to development and production environments
+
 ### 📚 [deploy-with-library](./deploy-with-library)
 
 Tools and pipelines for deploying containerized applications to Kubernetes clusters using the Azure DevOps Library for secure management of environment variables.

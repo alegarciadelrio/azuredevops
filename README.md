@@ -136,14 +136,111 @@ To use the examples in this repository:
 
 Refer to the README.md file in each folder for detailed, solution-specific usage instructions.
 
-## 👥 Contributing
+## 🌿 Branch Strategy and Conventions
+
+### 🔀 Branch Strategy
+
+This repository follows a GitFlow-inspired branching strategy:
+
+- **`main`**: Production-ready code that has been thoroughly tested and is ready for release
+- **`develop`**: Integration branch for features that are complete but awaiting release
+- **`feature/*`**: Feature branches for new functionality (branched from and merged back to `develop`)
+- **`hotfix/*`**: Hotfix branches for urgent production fixes (branched from `main` and merged to both `main` and `develop`)
+- **`release/*`**: Release branches for preparing new releases (branched from `develop` and merged to both `main` and `develop`)
+
+#### Branch Workflow
+
+1. Development work happens on `feature/*` branches
+2. Completed features are merged into `develop` via pull requests
+3. When ready for release, a `release/*` branch is created from `develop`
+4. After testing and finalization, the release branch is merged into both `main` and `develop`
+5. Critical bugs in production are fixed in `hotfix/*` branches and merged to both `main` and `develop`
+
+### 📝 Conventional Commits
+
+This repository follows the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages to ensure consistency and enable automated versioning and changelog generation.
+
+#### Commit Message Format
+
+```
+<type>: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation changes
+- **style**: Changes that do not affect the meaning of the code (formatting, etc.)
+- **refactor**: Code changes that neither fix a bug nor add a feature
+- **perf**: Performance improvements
+- **test**: Adding or correcting tests
+- **build**: Changes to the build system or dependencies
+- **ci**: Changes to CI configuration files and scripts
+- **chore**: Other changes that don't modify src or test files
+
+#### Examples
+
+```
+feat: add health check to deployment job
+
+fix: correct service port configuration
+
+docs: update deployment instructions
+```
+
+### 🔄 Conventional Pull Requests
+
+#### PR Title Format
+
+Pull request titles should follow the same convention as commit messages:
+
+```
+<type>: <description>
+```
+
+#### PR Description Template
+
+```markdown
+## Description
+[Provide a detailed description of the changes]
+
+## Related Issues
+[Reference any related issues: Fixes #123, Relates to #456]
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+- [ ] Configuration change
+- [ ] CI/CD improvement
+
+## Testing Performed
+[Describe the testing you have performed]
+
+## Checklist
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing tests pass locally with my changes
+```
+
+## � Contributing
 
 Contributions to the Azure DevOps Toolbox are welcome! To contribute:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/your-feature-name`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
+3. Commit your changes using conventional commits (`git commit -m 'feat: add some feature'`)
 4. Push to the branch (`git push origin feature/your-feature-name`)
-5. Open a Pull Request
+5. Open a Pull Request following the conventional PR format
 
 Please ensure your contributions include appropriate documentation and follow the existing patterns in the repository.

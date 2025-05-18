@@ -15,6 +15,7 @@ A collection of Azure DevOps pipeline examples and tools for common DevOps scena
 - [Overview](#overview)
 - [Repository Structure](#repository-structure)
   - [deploy-container](#deploy-container)
+  - [deploy-container-with-library](#deploy-container-with-library)
   - [deploy-eks](#deploy-eks)
   - [deploy-on-prem-kubernetes](#deploy-on-prem-kubernetes)
   - [deploy-with-library](#deploy-with-library)
@@ -29,6 +30,7 @@ The Azure DevOps Toolbox is a comprehensive collection of reusable pipeline temp
 
 The toolbox includes solutions for:
 - Container deployment to virtual machines
+- Container deployment with Azure DevOps Library for secure environment variables
 - Kubernetes deployment to Amazon EKS
 - Kubernetes deployment to on-premises clusters
 - Kubernetes deployment with Azure DevOps Library for secure environment variables
@@ -111,6 +113,7 @@ To use the examples in this repository:
 
 2. **Select the Appropriate Example**:
    - For container deployments: Use the files in the `deploy-container` folder
+   - For container deployments with secure environment variables: Use the files in the `deploy-container-with-library` folder
    - For Kubernetes deployments on Amazon EKS: Use the files in the `deploy-eks` folder
    - For Kubernetes deployments on on-premises clusters: Use the files in the `deploy-on-prem-kubernetes` folder
    - For Kubernetes deployments with secure environment variables: Use the files in the `deploy-with-library` folder
